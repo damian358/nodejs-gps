@@ -1,12 +1,21 @@
 var com = require("serialport");
+var logger = require('./logger');
+
 var SerialPort = com.SerialPort;
+
+this.handlers = [];
+_this = this;
+
+exports.addDataHandler = function (handler) {
+    _this.handlers.push(handler);
+};
 
 require("serialport").list(function (err, ports) {
     ports.forEach(function (port) {
         if (port.pnpId) {
-            console.log(port.comName);
-            console.log(port.pnpId);
-            console.log(port.manufacturer);
+            logger.log(port.comName);
+            logger.log(port.pnpId);
+            logger.log(port.manufacturer);
         }
     });
 });
@@ -17,26 +26,18 @@ var serialPort = new SerialPort("/dev/ttyACM0", {
 });
 
 serialPort.on('open', function () {
-    console.log('Port open');
+    logger.log('Port open');
 });
 
 var timestamp = parseInt(Date.now() / 1000);
 
-_this = this;
 serialPort.on('data', function (data) {
     if (parseInt(Date.now() / 1000) != timestamp) {
-        console.log(data);
+        logger.log(data);
         timestamp = parseInt(Date.now() / 1000);
-        if (_this.handlers.length) {
-            _this.handlers.forEach(function (handler) {
-                handler(data);
-            });
-        }
+        _this.handlers.forEach(function (handler) {
+            handler(data);
+        });
     }
 });
 
-this.handlers = [];
-
-exports.addDataHandler = function (handler) {
-    this.handlers.push(handler);
-};
