@@ -1,0 +1,11 @@
+{
+  "name": "nodejs-gps",
+  "version": "0.0.1",
+  "description": "socket.io + serialport app for communicating with gps devices",
+  "repository": "git@github.com:gunther358/nodejs-gps.git",
+  "dependencies": {
+    "express": "*",
+    "socket.io": "*",
+    "serialport": "*"
+  }
+}
