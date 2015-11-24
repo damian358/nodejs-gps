@@ -6,7 +6,7 @@ var argv = require('yargs')
     .describe('devices', 'Path to file containing device definitions')
     .default({
         address: 'http://localhost:3000',
-        devices: 'devices.json'
+        devices: __dirname + '/devices.json'
     })
     .example('$0 --address="http://127.0.0.1" --devices="./devices.json"')
     .argv;
@@ -16,8 +16,8 @@ var devices_file_path = argv.devices;
 
 var socket = require('socket.io-client')(server_address);
 var fs = require('fs');
-var serial = require('./serial');
-var logger = require('./logger');
+var serial = require('../lib/serial');
+var logger = require('../lib/logger');
 
 logger.enable();
 
