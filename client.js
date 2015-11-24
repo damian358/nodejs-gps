@@ -8,7 +8,7 @@ var argv = require('yargs')
         address: 'http://localhost:3000',
         devices: 'devices.json'
     })
-    .example('$0 --address="http://127.0.0.1" --name="some device" --devices="./devices.json"')
+    .example('$0 --address="http://127.0.0.1" --devices="./devices.json"')
     .argv;
 
 var server_address = argv.address;

@@ -1,9 +1,17 @@
 var serialport = require('serialport');
 var logger = require('./logger');
 
-var handlers = [];
 var devices = [];
 var socket = null;
+
+exports.addDevice = function (device) {
+    devices.push(device);
+    open_serial_connection(device);
+};
+
+exports.setSocket = function (socket_) {
+    socket = socket_;
+};
 
 function open_serial_connection(device) {
     device.options.parser = serialport.parsers.readline('\r\n');
@@ -20,12 +28,3 @@ function read_serial_data(data) {
     logger.log(data);
     socket.emit('chat message', data)
 }
-
-exports.addDevice = function (device) {
-    devices.push(device);
-    open_serial_connection(device);
-};
-
-exports.setSocket = function (socket_) {
-    socket = socket_;
-};

@@ -17,7 +17,7 @@ io.on('connection', function (socket) {
 
     socket.on('new device', function (msg) {
         logger.log('new device: ' + msg);
-        io.emit('chat message', msg);
+        io.emit('new device', msg);
     });
 });
 
