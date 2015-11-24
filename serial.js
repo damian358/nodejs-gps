@@ -1,43 +1,34 @@
-var com = require("serialport");
+var serialport = require('serialport');
+var fs = require('fs');
 var logger = require('./logger');
 
-var SerialPort = com.SerialPort;
+var handlers = [];
+var devices = [];
 
-this.handlers = [];
-_this = this;
+function open_serial_connection(device) {
+    device.options.parser = serialport.parsers.readline('\r\n');
+    var serial_port = new serialport.SerialPort(device.path, device.options);
 
-exports.addDataHandler = function (handler) {
-    _this.handlers.push(handler);
+    serial_port.on('open', function () {
+        logger.log('Port open: ' + device.path);
+        serial_port.on('data', read_serial_data);
+    });
+}
+
+function read_serial_data(data) {
+    logger.log(data);
+    handlers.forEach(function (handler) {
+        handler(data);
+    });
+}
+
+exports.addDevice = function (path, options) {
+    var device = {path: path, options: options};
+
+    devices.push(device);
+    open_serial_connection(device);
 };
 
-require("serialport").list(function (err, ports) {
-    ports.forEach(function (port) {
-        if (port.pnpId) {
-            logger.log(port.comName);
-            logger.log(port.pnpId);
-            logger.log(port.manufacturer);
-        }
-    });
-});
-
-var serialPort = new SerialPort("/dev/ttyACM0", {
-    baudrate: 115200,
-    parser: com.parsers.readline('\r\n')
-});
-
-serialPort.on('open', function () {
-    logger.log('Port open');
-});
-
-var timestamp = parseInt(Date.now() / 1000);
-
-serialPort.on('data', function (data) {
-    if (parseInt(Date.now() / 1000) != timestamp) {
-        logger.log(data);
-        timestamp = parseInt(Date.now() / 1000);
-        _this.handlers.forEach(function (handler) {
-            handler(data);
-        });
-    }
-});
-
+exports.addDataHandler = function (handler) {
+    handlers.push(handler);
+};

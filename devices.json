@@ -1,0 +1,14 @@
+[
+  {
+    "path": "/dev/ttyUSB0",
+    "options": {
+      "baudrate": 4800
+    }
+  },
+  {
+    "path": "/dev/ttyACM0",
+    "options": {
+      "baudrate": 115200
+    }
+  }
+]
