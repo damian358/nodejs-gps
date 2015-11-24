@@ -11,8 +11,8 @@ app.get('/', function (req, res) {
 
 io.on('connection', function (socket) {
     logger.log('new connection');
-    socket.on('chat message', function (msg) {
-        io.emit('chat message', msg);
+    socket.on('device message', function (msg) {
+        io.emit('device message', msg);
     });
 
     socket.on('new device', function (msg) {

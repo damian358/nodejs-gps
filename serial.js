@@ -20,11 +20,16 @@ function open_serial_connection(device) {
     serial_port.on('open', function () {
         logger.log('Port open: ' + device.path);
         socket.emit('new device', device.name);
-        serial_port.on('data', read_serial_data);
+        serial_port.on('data', function (data) {
+            read_serial_data(device.name, data);
+        });
     });
 }
 
-function read_serial_data(data) {
+function read_serial_data(device_name, data) {
     logger.log(data);
-    socket.emit('chat message', data)
+    socket.emit('device message', {
+        device_name: device_name,
+        data: data
+    })
 }

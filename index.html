@@ -16,29 +16,28 @@
 </head>
 <body>
 
-<ul id="messages"></ul>
-<!--<form action="">-->
-<!--<input id="m" autocomplete="off"/>-->
-<!--<button>Send</button>-->
-<!--</form>-->
+<div class="container">
+    <div id="content">
+        <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+        </ul>
+        <div id="tabs-content" class="tab-content">
+        </div>
+    </div>
+</div>
 
 <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script>
     var socket = io();
-    $('form').submit(function () {
-        socket.emit('chat message', $('#m').val());
-        $('#m').val('');
-        return false;
-    });
 
     socket.on('new device', function (device_name) {
-        console.log('new device');
+        $('#tabs').append('<li><a href="#' + device_name + '" data-toggle="tab">' + device_name + '</a></li>')
+        $('#tabs-content').append('<div class="tab-pane" id="' + device_name + '"><ul class="messages list-unstyled"></ul></div>')
     });
 
-    socket.on('chat message', function (msg) {
-        $('#messages').append($('<li>').text(msg));
+    socket.on('device message', function (msg) {
+        $('#' + msg.device_name + ' .messages').append($('<li>').text(msg.data));
     });
 </script>
 </body>
