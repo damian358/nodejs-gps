@@ -1,5 +1,4 @@
 var serialport = require('serialport');
-var fs = require('fs');
 var logger = require('./logger');
 
 var handlers = [];
@@ -22,11 +21,13 @@ function read_serial_data(data) {
     });
 }
 
-exports.addDevice = function (path, options) {
-    var device = {path: path, options: options};
-
+exports.addDevice = function (device) {
     devices.push(device);
     open_serial_connection(device);
+};
+
+exports.addDevices = function (devices) {
+    devices.forEach(exports.addDevice);
 };
 
 exports.addDataHandler = function (handler) {

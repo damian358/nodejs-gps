@@ -1,7 +1,6 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var serial = require('./serial');
 var logger = require('./logger');
 
 logger.enable();
@@ -20,18 +19,6 @@ io.on('connection', function (socket) {
         logger.log('new device: ' + msg);
         io.emit('chat message', msg);
     });
-});
-
-//serial.addDevice('/dev/ttyUSB0', {
-//    baudrate: 4800
-//});
-//
-//serial.addDevice('/dev/ttyACM0', {
-//    baudrate: 115200
-//});
-
-serial.addDataHandler(function (data) {
-    io.emit('chat message', data)
 });
 
 http.listen(3000, function () {
