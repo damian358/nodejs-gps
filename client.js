@@ -1,20 +1,18 @@
-var server_address = 'http://localhost:3000';
-var client_name = 'client1';
-var devices_file_path = 'devices.json';
+var argv = require('yargs')
+    .usage('Usage: $0 <command> [options]')
+    .help('h')
+    .alias('h', 'help')
+    .describe('address', 'Chat server address, must be full url')
+    .describe('devices', 'Path to file containing device definitions')
+    .default({
+        address: 'http://localhost:3000',
+        devices: 'devices.json'
+    })
+    .example('$0 --address="http://127.0.0.1" --name="some device" --devices="./devices.json"')
+    .argv;
 
-var argv = require('yargs').argv;
-
-if (argv.address) {
-    server_address = argv.address;
-}
-
-if (argv.name) {
-    client_name = argv.name;
-}
-
-if (argv.devices) {
-    devices_file_path = argv.devices;
-}
+var server_address = argv.address;
+var devices_file_path = argv.devices;
 
 var socket = require('socket.io-client')(server_address);
 var fs = require('fs');
@@ -24,18 +22,16 @@ var logger = require('./logger');
 logger.enable();
 
 socket.on('connect', function () {
-    socket.emit('new device', client_name);
+    var devices = JSON.parse(fs.readFileSync(devices_file_path, 'utf8'));
+
+    devices.forEach(function (device) {
+        serial.addDevice(device);
+    });
+
+    serial.setSocket(socket);
 });
 
 socket.on('connect_error', function (err) {
     logger.log('Cannot connect to ' + server_address);
     logger.log(err);
-});
-
-var devices = JSON.parse(fs.readFileSync(devices_file_path, 'utf8'));
-
-serial.addDevices(devices);
-
-serial.addDataHandler(function (data) {
-    socket.emit('chat message', data)
 });

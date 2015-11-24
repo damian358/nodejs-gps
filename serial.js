@@ -3,6 +3,7 @@ var logger = require('./logger');
 
 var handlers = [];
 var devices = [];
+var socket = null;
 
 function open_serial_connection(device) {
     device.options.parser = serialport.parsers.readline('\r\n');
@@ -10,15 +11,14 @@ function open_serial_connection(device) {
 
     serial_port.on('open', function () {
         logger.log('Port open: ' + device.path);
+        socket.emit('new device', device.name);
         serial_port.on('data', read_serial_data);
     });
 }
 
 function read_serial_data(data) {
     logger.log(data);
-    handlers.forEach(function (handler) {
-        handler(data);
-    });
+    socket.emit('chat message', data)
 }
 
 exports.addDevice = function (device) {
@@ -26,10 +26,6 @@ exports.addDevice = function (device) {
     open_serial_connection(device);
 };
 
-exports.addDevices = function (devices) {
-    devices.forEach(exports.addDevice);
-};
-
-exports.addDataHandler = function (handler) {
-    handlers.push(handler);
+exports.setSocket = function (socket_) {
+    socket = socket_;
 };

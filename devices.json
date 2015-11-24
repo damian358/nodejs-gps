@@ -1,12 +1,14 @@
 [
   {
     "path": "/dev/ttyUSB0",
+    "name": "GPS",
     "options": {
       "baudrate": 4800
     }
   },
   {
     "path": "/dev/ttyACM0",
+    "name": "Arduino",
     "options": {
       "baudrate": 115200
     }
