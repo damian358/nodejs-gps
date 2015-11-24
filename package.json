@@ -4,8 +4,9 @@
   "description": "socket.io + serialport app for communicating with gps devices",
   "repository": "git@github.com:gunther358/nodejs-gps.git",
   "dependencies": {
-    "express": "*",
-    "socket.io": "*",
-    "serialport": "*"
+    "express": "4.13.3",
+    "socket.io": "1.3.7",
+    "socket.io-client": "1.3.7",
+    "serialport": "2.0.5"
   }
 }
