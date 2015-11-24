@@ -7,12 +7,6 @@
     <title>Socket IO chat</title>
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
 </head>
 <body>
 
@@ -32,13 +26,19 @@
     var socket = io();
 
     socket.on('new device', function (device_name) {
-        $('#tabs').append('<li><a href="#' + device_name + '" data-toggle="tab">' + device_name + '</a></li>')
-        $('#tabs-content').append('<div class="tab-pane" id="' + device_name + '"><ul class="messages list-unstyled"></ul></div>')
+        add_device_tab(device_name);
     });
+
+    socket.emit('login');
 
     socket.on('device message', function (msg) {
         $('#' + msg.device_name + ' .messages').append($('<li>').text(msg.data));
     });
+
+    function add_device_tab(device_name) {
+        $('#tabs').append('<li><a href="#' + device_name + '" data-toggle="tab">' + device_name + '</a></li>')
+        $('#tabs-content').append('<div class="tab-pane" id="' + device_name + '"><ul class="messages list-unstyled"></ul></div>')
+    }
 </script>
 </body>
 </html>

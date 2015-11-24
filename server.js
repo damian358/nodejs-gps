@@ -3,6 +3,8 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var logger = require('./logger');
 
+var devices = [];
+
 logger.enable();
 
 app.get('/', function (req, res) {
@@ -11,13 +13,25 @@ app.get('/', function (req, res) {
 
 io.on('connection', function (socket) {
     logger.log('new connection');
+
+    socket.on('login', function () {
+        devices.forEach(function (device) {
+            socket.emit('new device', device);
+        });
+    });
+
     socket.on('device message', function (msg) {
         io.emit('device message', msg);
     });
 
-    socket.on('new device', function (msg) {
-        logger.log('new device: ' + msg);
-        io.emit('new device', msg);
+    socket.on('new device', function (device) {
+        if (devices.indexOf(device) > -1) {
+            return;
+        }
+
+        devices.push(device);
+        logger.log('new device: ' + device);
+        io.emit('new device', device);
     });
 });
 
